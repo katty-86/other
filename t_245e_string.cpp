@@ -12,7 +12,7 @@ string parse_string(string &s);
 
 int main(){
    vector<string> vec, result;
-   string filename="data.txt";
+   string filename="t_245e_data.txt";
    read_from_file(filename, vec);
    for(auto it=vec.begin(); it!=vec.end(); ++it){
       string conv_date= parse_string(*it);
