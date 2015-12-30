@@ -15,8 +15,15 @@ struct PersonalDate {
 	PersonalDate(std::string n, int s) :
 			name(n), surname(s) {
 	}
+	PersonalDate(const PersonalDate &p) {
+		name = p.name;
+		surname = p.surname;
+	}
 	void print() {
 		std::cout << surname << " " << name << "---";
+	}
+	string getPersonalDate() {
+		return name + "(" + to_string(surname) + ")";
 	}
 };
 
@@ -48,82 +55,82 @@ std::vector<PersonalDate> readFromFile(std::string filename) {
 
 }
 
-int main() {
-
-	std::vector<PersonalDate> vp, vp2;
-	vp = readFromFile("data_247e.txt");
-	std::cout << "---" << std::endl;
+void shuffleFirstVersion(std::vector<PersonalDate> vp) {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-	/*	for (auto it = vp.begin(); it != vp.end(); ++it) {
-
-	 (*it).print();
-	 }*/
-	vp2 = vp;
-
-	int i = 0;
-	std::cout << "---" << std::endl;
-	/*auto it_vp2= vp2.begin();
-	 for (auto it = vp.begin(); it != vp.end(); ++it) {
-	 cout<<i<<" ";
-	 (*it).print();
-	 (*it_vp2).print();
-	 cout<<endl;
-	 ++it_vp2;
-	 ++i;
-	 }*/
-	std::cout << "---" << std::endl;
-	auto it_vp2 = ++vp.begin();
-	i = 1;
-	//++it_vp2;
-
-	bool flag_end ;
+	int attempt = 0;
+	bool flag_end;
 	do {
+		++attempt;
+		int i = 1;
 		flag_end = false;
 		shuffle(vp.begin(), vp.end(), std::default_random_engine(seed));
 		auto it = vp.begin();
-		int i=1;
-		while((it != vp.end()) && (flag_end==false)) {//&& (flag_end!=true) ))) {
+		while ((it != vp.end()) && (flag_end == false)) { //&& (flag_end!=true) ))) {
 			if (it == vp.begin()) {
-				cout<<i<<" ";
-				(*it).print();
-				vp.back().print();
-				flag_end=checkIfFamily(*it, vp.back());
-				cout << "pierwszy " << flag_end<<endl;
+				//	cout<<i<<" "<<(*it).getPersonalDate()<<" "<<vp.back().getPersonalDate()<<endl;
+				flag_end = checkIfFamily(*it, vp.back());
 			} else {
-				auto it2=it;
-				it2--;
-				flag_end=checkIfFamily(*it, *it2);
-				cout<<i<<" ";
-				(*it).print();
-				(*it2).print();
-				cout << "reszta " <<flag_end<< endl;
+				auto prev = it - 1;
+				flag_end = checkIfFamily(*it, *prev);
+				//	cout<<i<<" "<<(*it).getPersonalDate()<<" "<<(*prev).getPersonalDate()<<endl;
 			}
 			++it;
 			++i;
 		}
-		cout<<endl;
 	} while (flag_end == true);
 
-//	cout<<"koncze??0"<<endl;
+	auto prev = vp.begin();
+	int i = 1;
+	for (auto it = vp.begin() + 1; it != vp.end(); ++it) {
+		cout << i << " " << (*prev).getPersonalDate() << " "
+				<< (*it).getPersonalDate() << endl;
+		i++;
+		prev++;
+	}
+	cout << i << " " << (*prev).getPersonalDate() << " "
+			<< (*vp.begin()).getPersonalDate() << endl;
+	cout << "\t*Amount of attempt  " << attempt <<"\n"<< endl;
+}
 
-	/*	for (auto it = vp.begin(); it != vp.end()-1; ++it) {
-	 cout<<i<<" ";
-	 (*it).print();
-	 (*it_vp2).print();
+void shuffleSecondVersion(std::vector<PersonalDate> vp) {
+	std::vector<pair<PersonalDate, PersonalDate>> pair;
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	shuffle(vp.begin(), vp.end(), std::default_random_engine(seed));
+	for (auto it = vp.begin() + 1; it != vp.end(); ++it) {
+		auto prev = it - 1;
+		auto next = it;
+		while (checkIfFamily(*it, *prev)) {
+			++next;
+			if (next == vp.end()) {
+				next = vp.begin();
+			}
+			iter_swap(it, next);
+		}
 
-	 if(!checkIfFamily(*it, *it_vp2)){
-	 cout<<"ok"<<endl;
-	 }
-	 ++it_vp2;
-	 cout<<endl;
-	 ++i;
-	 }
+	}
+	auto prev = vp.begin();
+	int i = 1;
+	for (auto it = vp.begin() + 1; it != vp.end(); ++it) {
+		cout << i << " " << (*prev).getPersonalDate() << " "
+				<< (*it).getPersonalDate() << endl;
+		i++;
+		prev++;
+	}
+	cout << i << " " << (*prev).getPersonalDate() << " "
+			<< (*vp.begin()).getPersonalDate() << endl;
 
-	 auto it=vp.begin();
-	 it_vp2=vp.end()-1;
-	 cout<<i<<"--> " ;
-	 (*it_vp2).print();
-	 (*it).print(); */
+}
+
+int main() {
+
+	cout << "\t*Prog name " << __FILE__ << "\n";
+	cout << "\t*Date " << __DATE__ << " " << __TIME__ << "\n";
+	cout << "\t*line " << __LINE__ << endl;
+
+	std::vector<PersonalDate> vp;
+	vp = readFromFile("data_247e.txt");
+	shuffleFirstVersion(vp);
+	shuffleSecondVersion(vp);
 
 }
 
