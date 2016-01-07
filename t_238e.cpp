@@ -15,7 +15,7 @@
 
 using namespace std;
 
-char returnLetter(char s){
+char returnLetter(const char &s){
 	//unsigned seed = std::chrono::steady_clock::now().time_since_epoch().count();
 	std::random_device  seed;
 	std::default_random_engine e(seed());
