@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <stdlib.h>
 #include "kk_list.h"
 
 #define LIST_SIZE  10
@@ -11,24 +10,27 @@ void printInt(void *v){
 	printf(" %d,",*(int *)v);
 }
 
-int printInt(void *v, void *y){
+int comapareInt(void *x, void *y){
 	int ix,iy;
 	ix= *(int *)x;
 	iy= *(int *)y;
-	return (ix==iy)?0:1
+	/*printf("ix %d iy %d \n",ix,iy);*/
+	return (ix==iy)?1:0;
 }
 
 int main(void) {
 	int i;
 	list_t list;
-	int head, tail, randval, val;
+	int head, tail; /*, randval;*/
+	int val4, val0, val3;
+	val4=4, val3=3,val0=0;
 	list_new(&list, sizeof(int));
 	srand(time(NULL));
 
 
 	for(i=0; i<LIST_SIZE;i++){
-		randval=rand()%RAND_MAXVAL;
-		list_append_end(&list, &randval);
+		/*randval=rand()%RAND_MAXVAL; */
+		list_append_end(&list, &i);
 	}
 
 	printf("*.Rozmiar :%d\n", list_size(&list));
@@ -38,9 +40,28 @@ int main(void) {
 	printf("*.Zawartość od ogona :\n");
 	print_list_back(&list,printInt);
 	printf("\n");
+	printf("*.Usuniecie 4:\n");
+	delete_element(&list,(void*)&val4, comapareInt );
+	print_list(&list,printInt);
+	printf("\n");
+	printf("*.Usuniecie 0:\n");
+	delete_element(&list,(void*)&val0, comapareInt );
+	print_list(&list,printInt);
+	printf("\n");
+	print_list_back(&list,printInt);
+	printf("\n");
+	printf("*.Usuniecie 2 razy ostatniego elementu:\n");
+	delete_from_tail(&list);
+	delete_from_tail(&list);
+	print_list(&list,printInt);
+	printf("\n");
+	/*add_element_after_val(list,(void*)&val3,  (void*)&val4, comapareInt );*/
+	printf("*.dodanie elementu 4 na koniec:\n");
+	list_append_end(&list, &val4);
+	print_list(&list,printInt);
+	printf("\n");
 	list_head(&list, (void *)&head);
 	list_tail(&list, (void *)&tail);
-//	delete_element(&list,(void*)&val, int (*compareFunc)(void *, void) )
 	printf("*.glowa listy: %d,ogon listy: %d \n", head, tail);
 	printf("*.Usuń liste:\n");
 	list_destroy(&list);

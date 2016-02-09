@@ -26,7 +26,9 @@ int list_size(list_t *list);
 void list_head(list_t *list, void *element);
 void list_tail(list_t *list, void *element);
 void list_append_end(list_t *list, void *data);
-int delete_element(list_t *list,void *data, int (*compareFunc)(void *) );
+void add_element_after_val(list_t *list,const void *data,  void *element, int (*compareFunc)(void * x, void *y) );
+void delete_element(list_t *list, void *data, int (*compareFunc)(void *, void *) );
+void delete_from_tail(list_t *list);
 
 void print_list_back(list_t *list, void (*printFunc)(void *));
 void print_list(list_t *list, void (*printFunc)(void *));
